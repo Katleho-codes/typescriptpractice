@@ -42,9 +42,9 @@ car.mileage = 2000;
 console.log(car);
 // Index Signatures
 // - Index signatures can be used for objects without a defined list of properties.
-var nameAgeMap = {};
-nameAgeMap.Jack = 25; // no error
-nameAgeMap.Mark = "Fifty"; // Error: Type 'string' is not assignable to type 'number'.
+// const nameAgeMap: { [index: string]: number } = {};
+// nameAgeMap.Jack = 25; // no error
+// nameAgeMap.Mark = "Fifty"; // Error: Type 'string' is not assignable to type 'number'.
 // TypeScript Enums
 // - enum is a special "class" that represents a group of constants (unchangeable variables).
 // - Enums come in two flavors string and numeric. Lets start with numeric.
@@ -150,7 +150,76 @@ nameAgeMap.Mark = "Fifty"; // Error: Type 'string' is not assignable to type 'nu
 // printStatusCode(404);
 // printStatusCode("404");
 // TypeScript Functions
+// 1. Return Type
 // the `: number` here specifies that this function returns a number
 function getTime() {
     return new Date().getTime();
 }
+// 2. Void Return Type
+// - The type void can be used to indicate a function doesn't return any value.
+function printHello() {
+    console.log("Hello!");
+}
+// 3. Parameters
+// - Function parameters are typed with a similar syntax as variable declarations.
+function multiply(a, b) {
+    return a * b;
+}
+// 4. Optional Parameters
+// the `?` operator here marks parameter `c` as optional
+function add(a, b, c) {
+    return a + b + (c || 0);
+}
+// 5. Named Parameters - typing named parameters follows the same pattern as typing normal parameters.
+function divide(_a) {
+    var dividend = _a.dividend, divisor = _a.divisor;
+    return dividend / divisor;
+}
+// 6. Default Parameters
+function pow(value, exponent) {
+    if (exponent === void 0) { exponent = 10; }
+    return Math.pow(value, exponent);
+}
+// 7. Rest Parameters
+// - Rest parameters can be typed like normal parameters, but the type must be an array as rest parameters are always arrays.
+function add(a, b) {
+    var rest = [];
+    for (var _i = 2; _i < arguments.length; _i++) {
+        rest[_i - 2] = arguments[_i];
+    }
+    return a + b + rest.reduce(function (p, c) { return p + c; }, 0);
+}
+// in this function, the parameter `value` automatically gets assigned the type `number` from the type `Negate`
+var negateFunction = function (value) { return value * -1; };
+// TypeScript Casting
+// 1. Casting with as
+// - A straightforward way to cast a variable is using the as keyword, which will directly change the type of the given variable.
+// let x: unknown = "hello";
+// console.log((x as string).length);
+// 2. Casting with <>
+// let x: unknown = "hello";
+// console.log((<string>x).length);
+// - This type of casting will not work with TSX, such as when working on React files.
+// 3. Force casting
+// - To override type errors that TypeScript may throw when casting, first cast to unknown, then to the target type.
+var x = "hello";
+console.log(x.length);
+var pointPart = {}; // `Partial` allows x and y to be optional
+pointPart.x = 10;
+var myCar = {
+    make: "Ford",
+    model: "Focus",
+    mileage: 12000
+};
+// 3. Record
+// Record is a shortcut to defining an object type with a specific key type and value type.
+// Record<string, number> is equivalent to { [key: string]: number }
+var nameAgeMap = {
+    Alice: 21,
+    Bob: 25
+};
+var bob = {
+    name: "Bob"
+};
+// 6. Exclude
+// - Exclude removes types from a union.

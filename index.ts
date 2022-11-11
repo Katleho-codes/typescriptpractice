@@ -68,9 +68,9 @@ console.log(car);
 // Index Signatures
 // - Index signatures can be used for objects without a defined list of properties.
 
-const nameAgeMap: { [index: string]: number } = {};
-nameAgeMap.Jack = 25; // no error
-nameAgeMap.Mark = "Fifty"; // Error: Type 'string' is not assignable to type 'number'.
+// const nameAgeMap: { [index: string]: number } = {};
+// nameAgeMap.Jack = 25; // no error
+// nameAgeMap.Mark = "Fifty"; // Error: Type 'string' is not assignable to type 'number'.
 
 // TypeScript Enums
 // - enum is a special "class" that represents a group of constants (unchangeable variables).
@@ -214,3 +214,233 @@ function getTime(): number {
 function printHello(): void {
   console.log("Hello!");
 }
+
+// 3. Parameters
+// - Function parameters are typed with a similar syntax as variable declarations.
+
+function multiply(a: number, b: number) {
+  return a * b;
+}
+
+// 4. Optional Parameters
+
+// the `?` operator here marks parameter `c` as optional
+function add(a: number, b: number, c?: number) {
+  return a + b + (c || 0);
+}
+
+// 5. Named Parameters - typing named parameters follows the same pattern as typing normal parameters.
+
+function divide({ dividend, divisor }: { dividend: number; divisor: number }) {
+  return dividend / divisor;
+}
+
+// 6. Default Parameters
+
+function pow(value: number, exponent: number = 10) {
+  return value ** exponent;
+}
+
+// 7. Rest Parameters
+// - Rest parameters can be typed like normal parameters, but the type must be an array as rest parameters are always arrays.
+
+function add(a: number, b: number, ...rest: number[]) {
+  return a + b + rest.reduce((p, c) => p + c, 0);
+}
+
+// 8. Type Alias
+
+type Negate = (value: number) => number;
+
+// in this function, the parameter `value` automatically gets assigned the type `number` from the type `Negate`
+const negateFunction: Negate = (value) => value * -1;
+
+// TypeScript Casting
+
+// 1. Casting with as
+// - A straightforward way to cast a variable is using the as keyword, which will directly change the type of the given variable.
+
+// let x: unknown = "hello";
+// console.log((x as string).length);
+
+// 2. Casting with <>
+
+// let x: unknown = "hello";
+// console.log((<string>x).length);
+// - This type of casting will not work with TSX, such as when working on React files.
+
+// 3. Force casting
+
+// - To override type errors that TypeScript may throw when casting, first cast to unknown, then to the target type.
+
+let x = "hello";
+console.log((x as unknown as number).length);
+
+// TypeScript Classes
+// - TypeScript adds types and visibility modifiers to JavaScript classes.
+// - The this keyword in a class usually refers to the instance of the class
+
+// 1. Members: Types - The members of a class (properties & methods) are typed using type annotations, similar to variables.
+
+// class Person {
+//   name: string;
+// }
+
+// const person = new Person();
+// person.name = "Jane";
+
+// 2. Members: Visibility
+
+// class Person {
+//   private name: string;
+
+//   public constructor(name: string) {
+//     this.name = name;
+//   }
+
+//   public getName(): string {
+//     return this.name;
+//   }
+// }
+
+// const person = new Person("Jane");
+// console.log(person.getName()); // person.name isn't accessible from outside the class since it's private
+
+// 3. Parameter Properties
+
+// class Person {
+//   // name is a private member variable
+//   public constructor(private name: string) {}
+
+//   public getName(): string {
+//     return this.name;
+//   }
+// }
+
+// const person = new Person("Jane");
+// console.log(person.getName());
+
+// 4. Readonly
+// - the readonly keyword can prevent class members from being changed.
+
+// class Person {
+//   private readonly name: string;
+
+//   public constructor(name: string) {
+//     // name cannot be changed after this initial definition, which has to be either at it's declaration or in the constructor.
+//     this.name = name;
+//   }
+
+//   public getName(): string {
+//     return this.name;
+//   }
+// }
+
+// const person = new Person("Jane");
+// console.log(person.getName());
+
+// 5. Inheritance: Implements
+
+// interface Shape {
+//   getArea: () => number;
+// }
+
+// class Rectangle implements Shape {
+//   public constructor(
+//     protected readonly width: number,
+//     protected readonly height: number
+//   ) {}
+
+//   public getArea(): number {
+//     return this.width * this.height;
+//   }
+// }
+
+// TypeScript Utility Types
+
+// 1. Partial
+// Partial changes all the properties in an object to be optional.
+
+interface Point {
+  x: number;
+  y: number;
+}
+
+let pointPart: Partial<Point> = {}; // `Partial` allows x and y to be optional
+pointPart.x = 10;
+
+// 2. Required
+// Required changes all the properties in an object to be required.
+
+interface Car {
+  make: string;
+  model: string;
+  mileage?: number;
+}
+
+let myCar: Required<Car> = {
+  make: "Ford",
+  model: "Focus",
+  mileage: 12000, // `Required` forces mileage to be defined
+};
+
+// 3. Record
+// Record is a shortcut to defining an object type with a specific key type and value type.
+// Record<string, number> is equivalent to { [key: string]: number }
+
+const nameAgeMap: Record<string, number> = {
+  Alice: 21,
+  Bob: 25,
+};
+
+// 4. Omit
+// Omit removes keys from an object type.
+
+// interface Person {
+//   name: string;
+//   age: number;
+//   location?: string;
+// }
+
+// const bob: Omit<Person, "age" | "location"> = {
+//   name: "Bob",
+//   // `Omit` has removed age and location from the type and they can't be defined here
+// };
+
+// 5. Pick
+// Pick removes all but the specified keys from an object type.
+
+interface Person {
+  name: string;
+  age: number;
+  location?: string;
+}
+
+const bob: Pick<Person, "name"> = {
+  name: "Bob",
+  // `Pick` has only kept name, so age and location were removed from the type and they can't be defined here
+};
+
+// 6. Exclude
+// - Exclude removes types from a union.
+
+type Primitive = string | number | boolean;
+const value: Exclude<Primitive, string> = true; // a string cannot be used here since Exclude removed it from the type.
+
+// 7. ReturnType
+// ReturnType extracts the return type of a function type.
+
+// type PointGenerator = () => { x: number; y: number };
+// const point: ReturnType<PointGenerator> = {
+//   x: 10,
+//   y: 20,
+// };
+
+// 8. Parameters
+// Parameters extracts the parameter types of a function type as an array.
+
+type PointPrinter = (p: { x: number; y: number }) => void;
+const point: Parameters<PointPrinter>[0] = {
+  x: 10,
+  y: 20,
+};
